@@ -47,7 +47,6 @@ class PharmaSysApp(MDApp):
         # Adiciona a tela principal (home) e a de notas fiscais
         sm.add_widget(HomeScreen())
         sm.add_widget(NotasFiscaisScreen())
-
         return sm
 
     def navigation_drawer(self):
