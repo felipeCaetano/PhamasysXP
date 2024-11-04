@@ -8,6 +8,7 @@ from screens.notas_fiscais_screen import NotasFiscaisScreen
 
 KV = '''
 MDBoxLayout:
+    id: 'layout'
     orientation: 'vertical'
     MDTopAppBar:
         title: "PharmaSys"
@@ -17,6 +18,11 @@ MDBoxLayout:
     MDLabel:
         text: "Bem-vindo ao sistema de gerenciamento de farmácia!"
         halign: "center"
+        size_hint_y: None
+        height: self.texture_size[1] + dp(20)
+        padding_y: dp(10)
+    
+    Widget:
 '''
 
 
@@ -25,10 +31,14 @@ class HomeScreen(MDScreen):
         super().__init__(**kwargs)
         self.name = 'home'
 
+        # Carrega o layout definido pela string KV
+        layout = Builder.load_string(KV)
+        self.add_widget(layout)  # Adiciona o layout à tela
+
         # Exemplo de botão que leva à tela de notas fiscais
         button = MDFloatingActionButton(
             icon="file-document",
-            pos_hint={"center_x": 0.5, "center_y": 0.5},
+            pos_hint={"center_x": 0.5, "center_y": 0.1},
             on_release=self.go_to_notas_fiscais
         )
         self.add_widget(button)
