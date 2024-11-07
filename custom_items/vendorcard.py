@@ -46,7 +46,7 @@ KV = '''
             id: cadastrar_fornecedor
             icon: "check"
             pos_hint: {"center_x": 0.9, "center_y": 0.1}
-            on_release: root.cadastrar_fornecedor
+            on_release: root.cadastrar_fornecedor(self)
 '''
 
 Builder.load_string(KV)
@@ -59,5 +59,5 @@ class VendorCard(MDCard):
     telefone = StringProperty()
     cadastrar_fornecedor = ObjectProperty()
 
-    def cadastrar_fornecedor(self, e):
-        print("teste de root")
+    # def cadastrar_fornecedor(self, e):
+    #     print("teste de root")

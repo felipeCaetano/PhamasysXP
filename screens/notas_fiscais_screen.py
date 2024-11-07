@@ -9,6 +9,7 @@ from kivymd.uix.dialog import MDDialog
 from kivymd.uix.filemanager import MDFileManager
 from kivymd.uix.label import MDLabel
 from kivymd.uix.screen import MDScreen
+from kivymd.uix.textfield import MDTextField
 
 from custom_items.vendorcard import VendorCard
 from services.leitura_nota_fiscal import ler_nota_fiscal
@@ -49,7 +50,7 @@ class NotasFiscaisScreen(MDScreen):
         self.main_layout.add_widget(self.top_layout)
 
         self.vendor_card = VendorCard(opacity=0)
-        #self.vendor_card.cadastrar_fornecedor = self.cadastrar_fornecedor
+        # self.vendor_card.cadastrar_fornecedor = self.cadastrar_fornecedor
         self.main_layout.add_widget(self.vendor_card)
         self.scroll_view = ScrollView(size_hint=(1, 0.5))
         self.main_layout.add_widget(self.scroll_view)
@@ -84,7 +85,7 @@ class NotasFiscaisScreen(MDScreen):
         self.vendor_card.nome = fornecedor[0]['nome']
         self.vendor_card.nome_fantasia = fornecedor[0]['nome_fantasia']
         self.vendor_card.telefone = fornecedor[0]['telefone']
-        #self.vendor_card.cadastrar_fornecedor = self.cadastrar_fornecedor
+        self.vendor_card.cadastrar_fornecedor = self.cadastrar_fornecedor
         self.vendor_card.opacity = 1
 
     def display_items(self, itens):
@@ -118,7 +119,10 @@ class NotasFiscaisScreen(MDScreen):
         print(self.selected_rows)
 
     def cadastrar_fornecedor(self, event):
-        print(event, "cadastrar forneceor")
+        field_list = reversed(self.vendor_card.children[0].children)
+        dados_fornecedor = [field.text for field in field_list if
+                            isinstance(field, MDTextField)]
+        # Aqui você deve implementar a lógica para cadastrar os fornecedores
         toast("Fornecedor Cadastrado com sucesso!")
 
     def cadastrar_itens_selecionados(self, *args):

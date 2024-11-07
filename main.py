@@ -4,6 +4,7 @@ from kivymd.uix.button import MDFloatingActionButton
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.screenmanager import MDScreenManager
 
+from screens.clientes_screen import CadastroClienteScreen
 from screens.notas_fiscais_screen import NotasFiscaisScreen
 
 KV = '''
@@ -43,6 +44,16 @@ class HomeScreen(MDScreen):
         )
         self.add_widget(button)
 
+        button_cadastro_cliente = MDFloatingActionButton(
+            icon="account-plus",
+            pos_hint={"center_x": 0.6, "center_y": 0.1},
+            on_release=self.go_to_cadastrar_clientes
+        )
+        self.add_widget(button_cadastro_cliente)
+
+    def go_to_cadastrar_clientes(self, *args):
+        self.manager.current = 'cadastro_cliente'
+
     def go_to_notas_fiscais(self, *args):
         # Acessa o gerenciador de telas e muda para 'notas_fiscais'
         self.manager.current = 'notas_fiscais'
@@ -57,6 +68,7 @@ class PharmaSysApp(MDApp):
         # Adiciona a tela principal (home) e a de notas fiscais
         sm.add_widget(HomeScreen())
         sm.add_widget(NotasFiscaisScreen())
+        sm.add_widget(CadastroClienteScreen())
         return sm
 
     def navigation_drawer(self):
