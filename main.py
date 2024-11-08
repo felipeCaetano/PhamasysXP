@@ -1,3 +1,4 @@
+from kivy.clock import Clock
 from kivymd.app import MDApp
 from kivy.lang import Builder
 from kivymd.uix.button import MDFloatingActionButton
@@ -5,7 +6,9 @@ from kivymd.uix.screen import MDScreen
 from kivymd.uix.screenmanager import MDScreenManager
 
 from screens.clientes_screen import CadastroClienteScreen
+from screens.login_screen import LoginScreen
 from screens.notas_fiscais_screen import NotasFiscaisScreen
+from screens.presplash import PreSplash
 
 KV = '''
 MDBoxLayout:
@@ -66,16 +69,21 @@ class PharmaSysApp(MDApp):
         sm = MDScreenManager()
 
         # Adiciona a tela principal (home) e a de notas fiscais
+        sm.add_widget(PreSplash())
+        sm.add_widget(LoginScreen())
         sm.add_widget(HomeScreen())
         sm.add_widget(NotasFiscaisScreen())
         sm.add_widget(CadastroClienteScreen())
         return sm
 
+    def on_start(self):
+        Clock.schedule_once(self.callback, 5)
+
     def navigation_drawer(self):
         pass  # Aqui você pode adicionar a lógica para abrir um menu lateral.
 
-    def callback(self):
-        pass
+    def callback(self, *args):
+        self.root.current = 'Login_Screen'
 
 
 if __name__ == '__main__':
