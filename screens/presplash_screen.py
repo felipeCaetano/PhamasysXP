@@ -13,8 +13,8 @@ class PreSplash(MDScreen):
             md_bg_color=(0, 48/255, 226/255)
         )
         logo = Image(
-            source="assets/pharmasyssplash.jpg",
-            size_hint=(.26, .26),
+            source="assets/pharmasys_logo.png",
+            # size_hint=(.5, .5),
             pos_hint={'center_x': .5, 'center_y': .55},
         )
         layout.add_widget(logo)
@@ -31,5 +31,6 @@ class PreSplash(MDScreen):
             halign='center',
             font_size=sp(20)
         )
+        layout.add_widget(slogan)
         self.add_widget(layout)
 
