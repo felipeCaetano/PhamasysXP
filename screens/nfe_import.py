@@ -112,10 +112,39 @@ class NFEScreen(MDScreen):
             self.mostrar_dados_nfe(nfe_data)
         except Exception as e:
             app = MDApp.get_running_app()
-            app.show_dialog("Erro ao processar arquivo", str(e))
+            #app.show_dialog("Erro ao processar arquivo", str(e))
+            print(e)
 
     def mostrar_dados_nfe(self, nfe_data):
-        print(nfe_data)
+        self.import_screen = self.children[0].ids.tabs
+        if not nfe_data:
+            return
+        # Limpa as tabs existentes
+        self.import_screen.clear_widgets()
+        # Cria tabs para cada seção
+        sections = {
+             'Dados Gerais': nfe_data['dados_gerais'],
+             'Emitente': nfe_data['emitente'],
+             'Destinatário': nfe_data['destinatario'],
+             'Produtos': nfe_data['produtos'],
+             'Impostos': nfe_data['impostos'],
+             'Totais': nfe_data['totais']
+         }
+        for title, data in sections.items():
+            tab = Tab(title=title)
+            if isinstance(data, list):
+                for item in data:
+                    for key, value in item.items():
+                        tab.ids.container.add_widget(
+                            OneLineListItem(text=f"{key}: {value}")
+                        )
+            else:
+                for key, value in data.items():
+                    tab.ids.container.add_widget(
+                        OneLineListItem(text=f"{key}: {value}")
+                    )
+
+            self.import_screen.add_widget(tab)
 
 
 class NFeParse:
