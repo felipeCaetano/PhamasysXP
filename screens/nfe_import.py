@@ -42,7 +42,7 @@ MDBoxLayout:
             MDRaisedButton:
                 text: "Escolher Arquivo"
                 pos_hint: {"center_x": .5}
-                on_release: app.abrir_gerenciador_arquivos()
+                on_release: root.parent.abrir_gerenciador_arquivos()
 
         MDTabs:
             id: tabs
@@ -87,17 +87,12 @@ class NFEScreen(MDScreen):
         super().__init__(**kwargs)
         self.file_manager = MDFileManager(
             exit_manager=self.exit_manager,
-            select_path=self.select_path
+            select_path=self.select_path,
+            ext=[".xml"]
         )
         self.nfe_parser = NFeParse()
-        # layout = Builder.load_string(KV)
-        # self.add_widget(layout)
-
-
 
     def on_enter(self):
-        # Código para inicializar a tela quando ela é exibida
-        # Carregar e adicionar o layout ao entrar na tela
         layout = Builder.load_string(KV)
         if layout:
             self.add_widget(layout)
@@ -118,6 +113,10 @@ class NFEScreen(MDScreen):
         except Exception as e:
             app = MDApp.get_running_app()
             app.show_dialog("Erro ao processar arquivo", str(e))
+
+    def mostrar_dados_nfe(self, nfe_data):
+        print(nfe_data)
+
 
 class NFeParse:
     def __init__(self):
@@ -258,7 +257,6 @@ class NFeParse:
                 'valor_total': total.findtext('nfe:vNF', namespaces=self.ns)
             }
         return {}
-
 
 # class NFeImportApp(MDApp):
 #     def __init__(self, **kwargs):
