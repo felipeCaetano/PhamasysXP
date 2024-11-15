@@ -1,7 +1,9 @@
+from kivy.metrics import dp
 from kivymd.app import MDApp
 from kivy.uix.screenmanager import Screen
 from kivy.lang import Builder
 from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.datatables import MDDataTable
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button import MDFlatButton, MDRaisedButton
 from kivymd.uix.filemanager import MDFileManager
@@ -92,6 +94,7 @@ class NFEScreen(MDScreen):
         )
         self.nfe_parser = NFeParse()
 
+
     def on_enter(self):
         layout = Builder.load_string(KV)
         if layout:
@@ -112,15 +115,16 @@ class NFEScreen(MDScreen):
             self.mostrar_dados_nfe(nfe_data)
         except Exception as e:
             app = MDApp.get_running_app()
-            #app.show_dialog("Erro ao processar arquivo", str(e))
+            # app.show_dialog("Erro ao processar arquivo", str(e))
             print(e)
 
     def mostrar_dados_nfe(self, nfe_data):
         self.import_screen = self.children[0].ids.tabs
         if not nfe_data:
             return
-        # Limpa as tabs existentes
-        self.import_screen.clear_widgets()
+        if self.import_screen.get_tab_list():
+            self.import_screen.clear_widgets()
+
         # Cria tabs para cada seção
         sections = {
              'Dados Gerais': nfe_data['dados_gerais'],
@@ -133,11 +137,16 @@ class NFEScreen(MDScreen):
         for title, data in sections.items():
             tab = Tab(title=title)
             if isinstance(data, list):
-                for item in data:
-                    for key, value in item.items():
-                        tab.ids.container.add_widget(
-                            OneLineListItem(text=f"{key}: {value}")
-                        )
+                if title=='Produtos':
+                    tab.ids.container.add_widget(
+                        self._create_data_table(data)
+                    )
+                else:
+                    for item in data:
+                        for key, value in item.items():
+                            tab.ids.container.add_widget(
+                                OneLineListItem(text=f"{key}: {value}")
+                            )
             else:
                 for key, value in data.items():
                     tab.ids.container.add_widget(
@@ -146,6 +155,34 @@ class NFEScreen(MDScreen):
 
             self.import_screen.add_widget(tab)
 
+    def _create_data_table(self, data):
+        [print(item) for item in data]
+        data_table = MDDataTable(
+            use_pagination=True,
+            size_hint=(1, None),
+            height=dp(450),
+            column_data=[
+                ("Código", dp(40)), ("Descrição", dp(65)), ('NCM', dp(30)),
+                ('CFOP', dp(30)), ('Unidade', dp(30)),
+                ("Quantidade", dp(20)), ("valor unit.", dp(30)),
+                ("Valor", dp(30)),
+            ],
+            row_data=[(
+                item['codigo'], item['descricao'], item['ncm'], item['cfop'],
+                item['unidade'], item['quantidade'],
+                item["valor_unitario"], item['valor_total']) for item in data],
+            check=True
+        )
+        data_table.bind(on_check_press=self.on_check_press)
+        return data_table
+
+    def on_check_press(self, instance_table, current_row):
+        '''Called when a table row is clicked.'''
+        if current_row in self.selected_rows:
+            self.selected_rows.remove(current_row)
+        else:
+            self.selected_rows.append(current_row)
+        print(self.selected_rows)
 
 class NFeParse:
     def __init__(self):
@@ -164,7 +201,6 @@ class NFeParse:
             'impostos': self._get_impostos(root),
             'totais': self._get_totais(root)
         }
-
         return nfe_data
 
     def _get_dados_gerais(self, root):

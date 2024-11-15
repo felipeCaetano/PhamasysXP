@@ -296,6 +296,9 @@ class PharmaSysApp(MDApp):
     def toggle_nav_drawer(self, *args):
         pass
 
+    def voltar_tela_principal(self, *args):
+        self.sm.current = 'main'
+
 
 if __name__ == '__main__':
     PharmaSysApp().run()
