@@ -10,6 +10,7 @@ from kivymd.uix.button import MDIconButton
 from kivymd.uix.datatables import MDDataTable
 from kivymd.uix.filemanager import MDFileManager
 from kivymd.uix.floatlayout import MDFloatLayout
+from kivymd.uix.gridlayout import MDGridLayout
 from kivymd.uix.label import MDLabel
 from kivymd.uix.list import OneLineListItem
 from kivymd.uix.screen import MDScreen
@@ -91,16 +92,15 @@ class EditableField(MDBoxLayout):
         super().__init__(**kwargs)
         self.orientation = 'horizontal'
         self.adaptive_height = True
-        self.spacing = dp(10)
+        self.spacing = dp(5)
         self.padding = [dp(5), 0, dp(5), 0]
 
         # Label do campo
         self.key = key
-        self.field_label = MDLabel(text=f"{key}:", size_hint_x=0.3, bold=True)
+        self.field_label = MDLabel(text=f"{key}:", size_hint_x=0.6, bold=True)
 
         # Campo de texto editável
-        self.text_field = MDTextField(text=str(value), size_hint_x=0.6)
-
+        self.text_field = MDTextField(text=str(value), size_hint_x=0.3)
         # Botões de ação
         self.edit_button = MDIconButton(icon="pencil", size_hint_x=0.1,
                                         on_release=self.toggle_edit)
@@ -209,11 +209,14 @@ class NFEScreen(MDScreen):
                                 MDTextField(hint_text=f"{key}", text=f"{value}")
                             )
                 else:
+                    layout = MDGridLayout(cols=len(data)//2)
                     for key, value in data.items():
-                        tab.ids.container.add_widget(
+                        layout.add_widget(
                             # OneLineListItem(text=f"{key}: {value}")
-                            MDTextField(hint_text=f"{key}", text=f"{value}")
+                            # MDTextField(hint_text=f"{key}", text=f"{value}")
+                            EditableField(key=key, value=value, callback=None)
                         )
+                    tab.ids.container.add_widget(layout)
             Clock.schedule_once(self._send_toast, 2)
             self.import_screen.add_widget(tab)
             self.btn_cadastrar.opacity = 1
