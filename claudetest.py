@@ -147,6 +147,7 @@ KV = '''
 class MenuCard(MDCard):
     icon = StringProperty()
     text = StringProperty()
+
     def on_press(self):
         pass
 
@@ -168,7 +169,6 @@ class PharmaSysApp(MDApp):
         super().__init__(**kwargs)
         self.current_user = None
         self.current_user_type = None
-
 
     def load_all_screens(self):
         self.screens = {
@@ -270,6 +270,7 @@ class PharmaSysApp(MDApp):
     def show_relatorios(self):
         self.show_dialog("Relatórios",
                          "Módulo de relatórios em desenvolvimento.")
+
     def show_notas(self):
         self.sm.current = 'nfe'
 

@@ -1,19 +1,24 @@
+import os
+
+from kivy.clock import Clock
+from kivy.lang import Builder
 from kivy.metrics import dp
 from kivymd.app import MDApp
-from kivy.uix.screenmanager import Screen
-from kivy.lang import Builder
+from kivymd.toast import toast
 from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.button import MDIconButton
 from kivymd.uix.datatables import MDDataTable
 from kivymd.uix.filemanager import MDFileManager
+from kivymd.uix.floatlayout import MDFloatLayout
+from kivymd.uix.label import MDLabel
+from kivymd.uix.list import OneLineListItem
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.tab import MDTabsBase, MDTabs
-from kivymd.uix.floatlayout import MDFloatLayout
-from kivymd.uix.list import OneLineListItem
-import os
+from kivymd.uix.tab.tab import MDTabsException
+from kivymd.uix.textfield import MDTextField
 
 from services.leitura_nota_fiscal import NFeParse
 
-# Interface em KV Language
 KV = '''
 MDBoxLayout:
     orientation: 'vertical'
@@ -21,7 +26,7 @@ MDBoxLayout:
 
     MDTopAppBar:
         title: "Importação de NF-e"
-        left_action_items: [["arrow-left", lambda x: app.voltar_tela_principal()]]
+        left_action_items: [["arrow-left", lambda x: root.parent.back_to_main_screen()]]
         right_action_items: [["close", lambda x: root.parent.limpar_notas()]]
 
     MDBoxLayout:
@@ -47,6 +52,12 @@ MDBoxLayout:
 
         MDTabs:
             id: tabs
+        MDRaisedButton:
+            id: button_cadastrar
+            text: "Cadastrar Itens Selecionados"
+            pos_hint: {"center_x": 0.5, "center_y": 0.1}
+            on_press: root.parent.cadastrar_itens_selecionados()
+            opacity: 0
 
 <Tab>
     MDBoxLayout:
@@ -75,12 +86,46 @@ class Tab(MDFloatLayout, MDTabsBase):
     pass
 
 
-# class ImportScreen(Screen):
-#     pass
+class EditableField(MDBoxLayout):
+    def __init__(self, key, value, callback, **kwargs):
+        super().__init__(**kwargs)
+        self.orientation = 'horizontal'
+        self.adaptive_height = True
+        self.spacing = dp(10)
+        self.padding = [dp(5), 0, dp(5), 0]
 
+        # Label do campo
+        self.key = key
+        self.field_label = MDLabel(text=f"{key}:", size_hint_x=0.3, bold=True)
 
-# class PreviewDialog(MDBoxLayout):
-#     pass
+        # Campo de texto editável
+        self.text_field = MDTextField(text=str(value), size_hint_x=0.6)
+
+        # Botões de ação
+        self.edit_button = MDIconButton(icon="pencil", size_hint_x=0.1,
+                                        on_release=self.toggle_edit)
+
+        # Adiciona os widgets
+        self.add_widget(self.field_label)
+        self.add_widget(self.text_field)
+        self.add_widget(self.edit_button)
+
+        # Estado inicial: não editável
+        self.text_field.disabled = True
+        self.callback = callback
+
+    def toggle_edit(self, *args):
+        if self.text_field.disabled:
+            # Habilita edição
+            self.text_field.disabled = False
+            self.edit_button.icon = "content-save"
+            self.text_field.focus = True
+        else:
+            # Salva as alterações
+            self.text_field.disabled = True
+            self.edit_button.icon = "pencil"
+            if self.callback:
+                self.callback(self.key, self.text_field.text)
 
 
 class NFEScreen(MDScreen):
@@ -118,13 +163,30 @@ class NFEScreen(MDScreen):
             app.show_dialog("Erro ao processar arquivo", str(e))
             print(e)
 
+    def limpar_notas(self):
+        """Limpa todas as notas fiscais abertas"""
+        self.selected_rows.clear()
+        for tab in self.children[0].ids.tabs.get_tab_list():
+            try:
+                self.children[0].ids.tabs.remove_widget(tab)
+                # self.nfe_tabs.clear()
+            except AttributeError:
+                self.back_to_main_screen()
+            except MDTabsException:
+                self.back_to_main_screen()
+        self.children[0].ids.button_cadastrar.opacity = 0
+
+    def back_to_main_screen(self):
+        app = MDApp.get_running_app()
+        app.sm.current = 'main'
+
     def mostrar_dados_nfe(self, nfe_data):
         self.import_screen: MDTabs = self.children[0].ids.tabs
+        self.btn_cadastrar = self.children[0].ids.button_cadastrar
         if not nfe_data:
             return
-        if tabs := self.import_screen.get_tab_list():
-            for tab in tabs:
-                self.import_screen.clear_widgets(tab)
+        for tab in self.import_screen.get_tab_list():
+            self.import_screen.remove_widget(tab)
         # Cria tabs para cada seção
         sections = {
             'Dados Gerais': nfe_data['dados_gerais'],
@@ -136,25 +198,33 @@ class NFEScreen(MDScreen):
         }
         for title, data in sections.items():
             tab = Tab(title=title)
-            # tab.ids.container.clear_widgets()
-            if isinstance(data, list):
-                if title == 'Produtos':
-                    tab.ids.container.add_widget(
-                        self._create_data_table(data)
-                    )
-                else:
+            if title == 'Produtos':
+                tab.ids.container.add_widget(self._create_data_table(data))
+            else:
+                if isinstance(data, list):
                     for item in data:
                         for key, value in item.items():
                             tab.ids.container.add_widget(
-                                OneLineListItem(text=f"{key}: {value}")
+                                # OneLineListItem(text=f"{key}: {value}")
+                                MDTextField(hint_text=f"{key}", text=f"{value}")
                             )
-            else:
-                for key, value in data.items():
-                    tab.ids.container.add_widget(
-                        OneLineListItem(text=f"{key}: {value}")
-                    )
-
+                else:
+                    for key, value in data.items():
+                        tab.ids.container.add_widget(
+                            # OneLineListItem(text=f"{key}: {value}")
+                            MDTextField(hint_text=f"{key}", text=f"{value}")
+                        )
+            Clock.schedule_once(self._send_toast, 2)
             self.import_screen.add_widget(tab)
+            self.btn_cadastrar.opacity = 1
+
+    def cadastrar_itens_selecionados(self, *args):
+        if not self.selected_rows:
+            toast("Nenhum item selecionado!")
+            return
+        # Aqui você deve implementar a lógica para cadastrar os itens no estoque
+        for item in self.selected_rows:
+            print(item)
 
     def _create_data_table(self, data):
         data_table = MDDataTable(
@@ -178,8 +248,11 @@ class NFEScreen(MDScreen):
         data_table.bind(on_check_press=self.on_check_press)
         return data_table
 
+    def _send_toast(self, *args):
+        toast("Nota lida com sucesso!")
+
     def on_check_press(self, instance_table, current_row):
-        '''Called when a table row is clicked.'''
+        """Called when a table row is clicked."""
         if current_row in self.selected_rows:
             self.selected_rows.remove(current_row)
         else:
