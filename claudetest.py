@@ -147,7 +147,6 @@ KV = '''
 class MenuCard(MDCard):
     icon = StringProperty()
     text = StringProperty()
-
     def on_press(self):
         pass
 
