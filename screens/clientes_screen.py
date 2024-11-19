@@ -1,39 +1,72 @@
+from wsgiref.validate import validator
+
+from kivymd.uix.card import MDCard
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.textfield import MDTextField
 from kivymd.uix.button import MDRaisedButton
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.toast import toast
+from kivymd.uix.toolbar import MDTopAppBar
 
 
 class CadastroClienteScreen(MDScreen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.name = "cadastro_cliente"
+        appbar = MDTopAppBar(
+        pos_hint={"top": 1},
+        title="Cadastro de Clientes",
+        left_action_items=[["arrow-left", lambda x: self.back_to_main_screen()]],
+        right_action_items=[["menu", lambda x: self.limpar_form()]]
+        )
+        self.add_widget(appbar)
+        main_layout = MDBoxLayout(
+            adaptive_height=True,
+            orientation="vertical",
+            padding=20,
+            spacing=10,
+            pos_hint={"center_x": 0.5, "center_y": 0.5},
+        )
 
-        # Layout principal da tela
-        main_layout = MDBoxLayout(orientation="vertical", padding=10,
-                                  spacing=10)
+        # Card para agrupar os campos
+        self.card = MDCard(
+            orientation="vertical",
+            size_hint=(0.9, None),
+            height="450dp",
+            padding=20,
+            elevation=6,
+            style="elevated",
+            shadow_softness=10,
+            shadow_offset=(3, 3),
+            pos_hint = {"center_x": 0.5, "center_y": 0.5},
+        )
 
-        # Campos de entrada de dados
         self.nome = MDTextField(hint_text="Nome",
                                 helper_text="Digite o nome do cliente",
                                 helper_text_mode='on_focus',
-                                write_tab=False, required=True)
+                                write_tab=False, icon_right="account",
+                                required=True)
         self.telefone = MDTextField(hint_text="Telefone",
-                                    helper_text='(xx) XXXXX-XXXX',
+                                    helper_text='(0xx) XXXXX-XXXX',
+                                    phone_mask="(###) ###-####",
                                     helper_text_mode='on_focus',
-                                    write_tab=False, required=True)
+                                    write_tab=False,  icon_right="phone",
+                                    required=True)
         self.email = MDTextField(hint_text="Email",
                                  helper_text='email do cliente',
                                  helper_text_mode='on_focus',
-                                 write_tab=False, required=True)
+                                 write_tab=False, icon_right="email",
+                                 required=True)
         self.cpf = MDTextField(hint_text="CPF", helper_text='só números',
                                helper_text_mode='on_focus',
-                               write_tab=False, required=True)
+                               write_tab=False,
+                               icon_right="card-account-details",
+                               required=True)
 
         # Menu dropdown para seleção de sexo
-        self.sexo = MDTextField(hint_text="Sexo", on_focus=self.open_menu)
+        self.sexo = MDTextField(hint_text="Sexo",
+                                icon_right="gender-male-female",
+                                on_focus=self.open_menu)
 
         self.menu_items = [
             {"text": "Masculino",
@@ -49,11 +82,11 @@ class CadastroClienteScreen(MDScreen):
         self.sexo.bind(focus=self.open_menu)
 
         # Adicionando os campos ao layout principal
-        main_layout.add_widget(self.nome)
-        main_layout.add_widget(self.telefone)
-        main_layout.add_widget(self.email)
-        main_layout.add_widget(self.cpf)
-        main_layout.add_widget(self.sexo)
+        self.card.add_widget(self.nome)
+        self.card.add_widget(self.telefone)
+        self.card.add_widget(self.email)
+        self.card.add_widget(self.cpf)
+        self.card.add_widget(self.sexo)
 
         # Botão para cadastrar o cliente
         btn_cadastrar = MDRaisedButton(
@@ -61,8 +94,8 @@ class CadastroClienteScreen(MDScreen):
             pos_hint={"center_x": 0.5},
             on_release=self.cadastrar_cliente
         )
-        main_layout.add_widget(btn_cadastrar)
-
+        self.card.add_widget(btn_cadastrar)
+        main_layout.add_widget(self.card)
         # Adiciona o layout principal à tela
         self.add_widget(main_layout)
 
@@ -95,3 +128,4 @@ class CadastroClienteScreen(MDScreen):
     def clear_fields(self):
         # Limpa os campos após o cadastro
         self.nome.text = self.telefone.text = self.email.text = self.cpf.text = self.sexo.text = ""
+

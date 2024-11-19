@@ -7,6 +7,7 @@ from kivymd.app import MDApp
 from kivymd.toast import toast
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.button import MDIconButton
+from kivymd.uix.card import MDCard
 from kivymd.uix.datatables import MDDataTable
 from kivymd.uix.filemanager import MDFileManager
 from kivymd.uix.floatlayout import MDFloatLayout
@@ -15,8 +16,9 @@ from kivymd.uix.label import MDLabel
 from kivymd.uix.list import OneLineListItem
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.tab import MDTabsBase, MDTabs
-from kivymd.uix.tab.tab import MDTabsException
+from kivymd.uix.tab.tab import MDTabsException  # noinspection PyProtectedMember
 from kivymd.uix.textfield import MDTextField
+from kivymd.uix.tooltip import MDTooltip
 
 from services.leitura_nota_fiscal import NFeParse
 
@@ -28,7 +30,7 @@ MDBoxLayout:
     MDTopAppBar:
         title: "Importação de NF-e"
         left_action_items: [["arrow-left", lambda x: root.parent.back_to_main_screen()]]
-        right_action_items: [["close", lambda x: root.parent.limpar_notas()]]
+        right_action_items: [["menu", lambda x: root.parent.limpar_notas()]]
 
     MDBoxLayout:
         orientation: 'vertical'
@@ -36,20 +38,51 @@ MDBoxLayout:
         padding: '10dp'
 
         MDCard:
-            orientation: 'vertical'
+            orientation: 'horizontal'
             padding: '8dp'
-            size_hint: None, None
-            size: "300dp", "100dp"
-            pos_hint: {"center_x": .5}
+            size_hint: 1, None
+            height: "56dp"
+            md_bg_color: app.theme_cls.bg_light
+            elevation: 1
+            
+            MDBoxLayout:
+                orientation: 'horizontal'
+                spacing: "16dp"   # Espaçamento entre botões
+                padding: ["16dp", "0dp"]  # Padding nas laterais
+                
+                TooltipMDIconButton:
+                    icon: "file-import"
+                    tooltip_text: "Selecionar arquivo"
+                    on_release: root.parent.abrir_gerenciador_arquivos()
+                    
+                TooltipMDIconButton:
+                    icon: "cancel"
+                    tooltip_text: "Limpar campos"
+                    on_release: root.parent.limpar_notas()
 
-            MDLabel:
-                text: "Selecione o arquivo XML da NF-e"
-                halign: "center"
-
-            MDRaisedButton:
-                text: "Escolher Arquivo"
-                pos_hint: {"center_x": .5}
-                on_release: root.parent.abrir_gerenciador_arquivos()
+                TooltipMDIconButton:
+                    icon: "content-save"
+                    tooltip_text: "Salvar NFe"
+                    on_release: root.parent.salvar_nfe()
+                    
+                MDWidget:
+                    size_hint_x: None
+                    width: "1dp"
+                    md_bg_color: app.theme_cls.divider_color
+                
+                # Botões de visualização/filtro
+                TooltipMDIconButton:
+                    icon: "filter"
+                    tooltip_text: "Filtrar dados"
+                    on_release: root.parent.mostrar_filtros()
+                
+                TooltipMDIconButton:
+                    icon: "view-list"
+                    tooltip_text: "Alterar visualização"
+                    on_release: root.parent.alterar_visualizacao()
+            
+            Widget:  # Espaçador flexível
+                size_hint_x: 1
 
         MDTabs:
             id: tabs
@@ -69,6 +102,13 @@ MDBoxLayout:
         MDScrollView:
             MDList:
                 id: container
+
+<TooltipMDIconButton@MDIconButton+MDTooltip>:
+    shift_y: dp(25)
+    icon_size: "24dp"
+    theme_icon_color: "Custom"
+    icon_color: app.theme_cls.primary_color
+    
 
 <PreviewDialog>:
     orientation: 'vertical'
@@ -92,25 +132,28 @@ class EditableField(MDBoxLayout):
         super().__init__(**kwargs)
         self.orientation = 'horizontal'
         self.adaptive_height = True
-        self.spacing = dp(5)
+        self.spacing = 10
         self.padding = [dp(5), 0, dp(5), 0]
 
         # Label do campo
         self.key = key
-        self.field_label = MDLabel(text=f"{key}:", size_hint_x=0.6, bold=True)
+        self.field_label = MDLabel(
+            text=f"{key}:",
+            size_hint_x=0.1,
+            bold=True,
+            halign='center',
+            padding=[0,0,dp(5),0],
+        )
 
         # Campo de texto editável
-        self.text_field = MDTextField(text=str(value), size_hint_x=0.3)
+        self.text_field = MDTextField(text=str(value), size_hint_x=0.2)
         # Botões de ação
         self.edit_button = MDIconButton(icon="pencil", size_hint_x=0.1,
                                         on_release=self.toggle_edit)
-
-        # Adiciona os widgets
         self.add_widget(self.field_label)
         self.add_widget(self.text_field)
         self.add_widget(self.edit_button)
 
-        # Estado inicial: não editável
         self.text_field.disabled = True
         self.callback = callback
 
@@ -172,8 +215,8 @@ class NFEScreen(MDScreen):
                 # self.nfe_tabs.clear()
             except AttributeError:
                 self.back_to_main_screen()
-            except MDTabsException:
-                self.back_to_main_screen()
+            # except MDTabsException:
+            #     self.back_to_main_screen()
         self.children[0].ids.button_cadastrar.opacity = 0
 
     def back_to_main_screen(self):
@@ -203,18 +246,30 @@ class NFEScreen(MDScreen):
             else:
                 if isinstance(data, list):
                     for item in data:
+                        card = MDCard(
+                            orientation='vertical',
+                            size_hint_y=None,
+                            height=self._calculate_card_height(item),
+                            padding=dp(10),
+                            spacing=dp(5),
+                            md_bg_color=[0.9, 0.9, 0.9, 1]
+                        )
                         for key, value in item.items():
-                            tab.ids.container.add_widget(
-                                # OneLineListItem(text=f"{key}: {value}")
-                                MDTextField(hint_text=f"{key}", text=f"{value}")
+                            card.add_widget(
+                                MDTextField(
+                                    hint_text=f"{key}",
+                                    text=f"{value}")
                             )
+                        tab.ids.container.add_widget(card)
                 else:
-                    layout = MDGridLayout(cols=len(data)//2)
+                    layout = MDGridLayout(cols=len(data) // 2, spacing=dp(2))
                     for key, value in data.items():
                         layout.add_widget(
-                            # OneLineListItem(text=f"{key}: {value}")
-                            # MDTextField(hint_text=f"{key}", text=f"{value}")
-                            EditableField(key=key, value=value, callback=None)
+                            EditableField(
+                                key=key.capitalize(),
+                                value=value,
+                                callback=None
+                            )
                         )
                     tab.ids.container.add_widget(layout)
             Clock.schedule_once(self._send_toast, 2)
@@ -228,6 +283,28 @@ class NFEScreen(MDScreen):
         # Aqui você deve implementar a lógica para cadastrar os itens no estoque
         for item in self.selected_rows:
             print(item)
+
+    def mostrar_filtros(self, *args):
+        # Implementar lógica de filtros
+        pass
+
+    def alterar_visualizacao(self, *args):
+        # Implementar troca de visualização
+        pass
+
+    def mostrar_ajuda(self, *args):
+        # Mostrar diálogo de ajuda
+        pass
+
+    def salvar_nfe(self, *args):
+        pass
+
+    def _calculate_card_height(self, item_data):
+        """Calcula a altura necessária para o card baseado no número de campos"""
+        base_height = dp(20)  # Padding
+        field_height = dp(60)  # Altura estimada por campo
+        title_height = dp(30)  # Altura do título
+        return base_height + (len(item_data) * field_height) + title_height
 
     def _create_data_table(self, data):
         data_table = MDDataTable(

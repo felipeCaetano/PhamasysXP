@@ -7,6 +7,7 @@ from kivymd.uix.button import MDFlatButton
 from kivymd.uix.card import MDCard
 from kivy.properties import StringProperty
 
+from screens.clientes_screen import CadastroClienteScreen
 from screens.nfe_import import NFEScreen
 
 # Definindo o estilo das telas em KV Language
@@ -175,7 +176,8 @@ class PharmaSysApp(MDApp):
             'splash': SplashScreen(name='splash'),
             'login': LoginScreen(name='login'),
             'main': MainScreen(name='main'),
-            'nfe': NFEScreen(name='nfe')
+            'nfe': NFEScreen(name='nfe'),
+            'clientes': CadastroClienteScreen(name='clientes')
         }
 
     def build(self):
@@ -265,7 +267,7 @@ class PharmaSysApp(MDApp):
                          "Módulo de medicamentos em desenvolvimento.")
 
     def show_clientes(self):
-        self.show_dialog("Clientes", "Módulo de clientes em desenvolvimento.")
+        self.sm.current = 'clientes'
 
     def show_relatorios(self):
         self.show_dialog("Relatórios",
