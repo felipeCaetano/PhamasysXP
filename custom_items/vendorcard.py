@@ -58,6 +58,3 @@ class VendorCard(MDCard):
     nome_fantasia = StringProperty()
     telefone = StringProperty()
     cadastrar_fornecedor = ObjectProperty()
-
-    # def cadastrar_fornecedor(self, e):
-    #     print("teste de root")

@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AnalysisUIOptions">
+    <option name="SPLITTER_PROPORTION" value="0.45736435" />
+    <option name="ANALYZE_INJECTED_CODE" value="false" />
+    <option name="SCOPE_TYPE" value="8" />
+    <option name="CUSTOM_SCOPE_NAME" value="Recently Changed Files" />
+  </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1424ee93-816c-4e4a-8745-f947124e3ab0" name="Changes" comment="modificações no modulo de notas fiscais">
-      <change afterPath="$PROJECT_DIR$/assets/pharmasyssplash.webp" afterDir="false" />
+    <list default="true" id="1424ee93-816c-4e4a-8745-f947124e3ab0" name="Changes" comment="Notas ok e modificação do cadastro de clientes">
+      <change afterPath="$PROJECT_DIR$/custom_items/menu_icon_tooltip_bar.kv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/custom_items/menu_icon_tooltip_bar.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/custom_items/tooltip_icon_button.kv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/PhamaSysXP.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/PhamaSysXP.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/claudetest.py" beforeDir="false" afterPath="$PROJECT_DIR$/claudetest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/custom_items/vendorcard.py" beforeDir="false" afterPath="$PROJECT_DIR$/custom_items/vendorcard.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/screens/clientes_screen.py" beforeDir="false" afterPath="$PROJECT_DIR$/screens/clientes_screen.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/screens/nfe_import.py" beforeDir="false" afterPath="$PROJECT_DIR$/screens/nfe_import.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/leitura_nota_fiscal.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/leitura_nota_fiscal.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,6 +41,18 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;felipeCaetano&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/felipeCaetano/PhamasysXP.git&quot;,
+    &quot;accountId&quot;: &quot;b72dd1f4-c460-47d7-afc2-dcc76652252c&quot;
+  }
+}</component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -38,22 +60,24 @@
   &quot;associatedIndex&quot;: 1
 }</component>
   <component name="ProjectId" id="2oJ3126duWPT8ckKBoN44OKX0xx" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.claudetest.executor": "Debug",
-    "Python.main.executor": "Run",
-    "Python.nfe_import.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "C:/Users/felipec/PycharmProjects/PhamasysXP/services/leitura_nota_fiscal.py",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.claudetest.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.nfe_import.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/felipec/PycharmProjects/PhamasysXP/services/leitura_nota_fiscal.py&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;aDefault&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="claudetest" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="PhamasysXP" />
@@ -87,6 +111,13 @@
       </list>
     </recent_temporary>
   </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-ce3d9afa04ac-ba05f1cad1b1-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-242.20224.347" />
+      </set>
+    </attachedChunks>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -112,7 +143,15 @@
       <option name="project" value="LOCAL" />
       <updated>1731373147365</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Notas ok e modificação do cadastro de clientes">
+      <option name="closed" value="true" />
+      <created>1732006357213</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1732006357213</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -129,17 +168,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="modificações no modulo de notas fiscais" />
     <MESSAGE value="splashscreen" />
-    <option name="LAST_COMMIT_MESSAGE" value="splashscreen" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/screens/nfe_import.py</url>
-          <line>114</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <MESSAGE value="tabela para produtos em notas fiscais" />
+    <MESSAGE value="Notas ok e modificação do cadastro de clientes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Notas ok e modificação do cadastro de clientes" />
   </component>
 </project>

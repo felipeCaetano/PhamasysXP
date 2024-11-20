@@ -1,0 +1,65 @@
+<BoxLayout>:
+<MenuIconToolTipBar>:
+    orientation: 'horizontal'
+    spacing: "16dp"
+    padding: ["16dp", "0dp"]
+
+    TooltipMDIconButton:
+        id: import_button
+        icon: root.import_icon
+        tooltip_text: root.import_tooltip
+        opacity: 1 if root.show_import else 0
+        disabled: not root.show_import
+        size_hint_x: None
+        width: self.height if root.show_import else 0
+        on_release: root.dispatch('on_import_press')
+
+    TooltipMDIconButton:
+        id: clear_button
+        icon: root.clear_icon
+        tooltip_text: root.clear_tooltip
+        opacity: 1 if root.show_clear else 0
+        disabled: not root.show_clear
+        size_hint_x: None
+        width: self.height if root.show_clear else 0
+        on_release: root.dispatch('on_clear_press')
+
+    TooltipMDIconButton:
+        id: save_button
+        icon: root.save_icon
+        tooltip_text: root.save_tooltip
+        opacity: 1 if root.show_save else 0
+        disabled: not root.show_save
+        size_hint_x: None
+        width: self.height if root.show_save else 0
+        on_release: root.dispatch('on_save_press')
+
+    MDWidget:
+        id: divider
+        size_hint_x: None
+        width: "1dp" if root.show_divider else 0
+        opacity: 1 if root.show_divider else 0
+        md_bg_color: app.theme_cls.divider_color
+
+    TooltipMDIconButton:
+        id: filter_button
+        icon: root.filter_icon
+        tooltip_text: root.filter_tooltip
+        opacity: 1 if root.show_filter else 0
+        disabled: not root.show_filter
+        size_hint_x: None
+        width: self.height if root.show_filter else 0
+        on_release: app.root.mostrar_filtros() if hasattr(app.root, 'mostrar_filtros') else None
+
+    TooltipMDIconButton:
+        id: view_button
+        icon: root.view_icon
+        tooltip_text: root.view_tooltip
+        opacity: 1 if root.show_view else 0
+        disabled: not root.show_view
+        size_hint_x: None
+        width: self.height if root.show_view else 0
+        on_release: app.root.alterar_visualizacao() if hasattr(app.root, 'alterar_visualizacao') else None
+
+    Widget:  # Espaçador flexível
+        size_hint_x: 1

@@ -13,12 +13,9 @@ from kivymd.uix.filemanager import MDFileManager
 from kivymd.uix.floatlayout import MDFloatLayout
 from kivymd.uix.gridlayout import MDGridLayout
 from kivymd.uix.label import MDLabel
-from kivymd.uix.list import OneLineListItem
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.tab import MDTabsBase, MDTabs
-from kivymd.uix.tab.tab import MDTabsException  # noinspection PyProtectedMember
 from kivymd.uix.textfield import MDTextField
-from kivymd.uix.tooltip import MDTooltip
 
 from services.leitura_nota_fiscal import NFeParse
 
@@ -29,7 +26,7 @@ MDBoxLayout:
 
     MDTopAppBar:
         title: "Importação de NF-e"
-        left_action_items: [["arrow-left", lambda x: root.parent.back_to_main_screen()]]
+        left_action_items: [["arrow-left", lambda x:app.voltar_tela_principal()]]
         right_action_items: [["menu", lambda x: root.parent.limpar_notas()]]
 
     MDBoxLayout:
@@ -47,8 +44,8 @@ MDBoxLayout:
             
             MDBoxLayout:
                 orientation: 'horizontal'
-                spacing: "16dp"   # Espaçamento entre botões
-                padding: ["16dp", "0dp"]  # Padding nas laterais
+                spacing: "16dp"
+                padding: ["16dp", "0dp"]
                 
                 TooltipMDIconButton:
                     icon: "file-import"
@@ -70,7 +67,6 @@ MDBoxLayout:
                     width: "1dp"
                     md_bg_color: app.theme_cls.divider_color
                 
-                # Botões de visualização/filtro
                 TooltipMDIconButton:
                     icon: "filter"
                     tooltip_text: "Filtrar dados"
@@ -145,9 +141,7 @@ class EditableField(MDBoxLayout):
             padding=[0,0,dp(5),0],
         )
 
-        # Campo de texto editável
         self.text_field = MDTextField(text=str(value), size_hint_x=0.2)
-        # Botões de ação
         self.edit_button = MDIconButton(icon="pencil", size_hint_x=0.1,
                                         on_release=self.toggle_edit)
         self.add_widget(self.field_label)
@@ -159,12 +153,10 @@ class EditableField(MDBoxLayout):
 
     def toggle_edit(self, *args):
         if self.text_field.disabled:
-            # Habilita edição
             self.text_field.disabled = False
             self.edit_button.icon = "content-save"
             self.text_field.focus = True
         else:
-            # Salva as alterações
             self.text_field.disabled = True
             self.edit_button.icon = "pencil"
             if self.callback:
@@ -214,14 +206,10 @@ class NFEScreen(MDScreen):
                 self.children[0].ids.tabs.remove_widget(tab)
                 # self.nfe_tabs.clear()
             except AttributeError:
-                self.back_to_main_screen()
+                MDApp.get_running_app().voltar_tela_principal()
             # except MDTabsException:
             #     self.back_to_main_screen()
         self.children[0].ids.button_cadastrar.opacity = 0
-
-    def back_to_main_screen(self):
-        app = MDApp.get_running_app()
-        app.sm.current = 'main'
 
     def mostrar_dados_nfe(self, nfe_data):
         self.import_screen: MDTabs = self.children[0].ids.tabs
@@ -230,7 +218,6 @@ class NFEScreen(MDScreen):
             return
         for tab in self.import_screen.get_tab_list():
             self.import_screen.remove_widget(tab)
-        # Cria tabs para cada seção
         sections = {
             'Dados Gerais': nfe_data['dados_gerais'],
             'Emitente': nfe_data['emitente'],
