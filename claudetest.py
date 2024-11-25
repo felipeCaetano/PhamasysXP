@@ -9,6 +9,7 @@ from kivy.properties import StringProperty
 
 from screens.clientes_screen import CadastroClienteScreen
 from screens.nfe_import import NFEScreen
+from config.database import init_db, db_session
 
 # Definindo o estilo das telas em KV Language
 KV = '''
@@ -303,4 +304,5 @@ class PharmaSysApp(MDApp):
 
 
 if __name__ == '__main__':
+    init_db()
     PharmaSysApp().run()
