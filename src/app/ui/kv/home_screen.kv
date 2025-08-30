@@ -1,0 +1,29 @@
+<HomeScreen>:
+    name: "home"
+    MDBoxLayout:
+        orientation: "vertical"
+
+        MDTopAppBar:
+            title: "PharmaSys"
+            left_action_items: [["menu", lambda x: app.open_nav_drawer()]]
+            right_action_items: [["dots-vertical", lambda x: app.show_options()]]
+
+        MDLabel:
+            text: "Bem-vindo ao sistema de gerenciamento de farmácia!"
+            halign: "center"
+            size_hint_y: None
+            height: self.texture_size[1] + dp(20)
+
+        Widget:
+
+    MDFloatingActionButton:
+        id: btn_notas
+        icon: "file-document"
+        pos_hint: {"center_x": 0.5, "center_y": 0.1}
+        on_release: root.go_to_notas_fiscais()
+
+    MDFloatingActionButton:
+        id: btn_cadastro
+        icon: "account-plus"
+        pos_hint: {"center_x": 0.6, "center_y": 0.1}
+        on_release: root.go_to_cadastrar_clientes()
